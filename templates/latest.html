@@ -4,12 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Latest Video</title>
-    {{ latest_blob }}
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const videoPlayer = document.querySelector("#video-player");
+            const videoSource = document.querySelector("#video-source");
+
+            const websocket = new WebSocket("ws://api.fogcat5.com/latest");
+
+            websocket.onopen = () => {
+                console.log("WebSocket connection established.");
+            };
+
+            websocket.onmessage = () => {
+                console.log("New video update received.");
+
+                // Force reload of the video to show the latest version
+                const videoUrl = "https://weather.fogcat5.com/collector/video_latest";
+                videoSource.src = videoUrl + "?t=" + new Date().getTime(); // Cache busting query parameter
+                videoPlayer.load();
+            };
+
+            websocket.onerror = (error) => {
+                console.error("WebSocket error:", error);
+            };
+
+            websocket.onclose = () => {
+                console.log("WebSocket connection closed.");
+            };
+        });
+    </script>
 </head>
 <body>
     <h1>Latest Video</h1>
-    <video autoplay muted loop controls style="max-width: 100%; height: auto;">
-        <source src="{{ video_url }}" type="video/mp4">
+    <video id="video-player" autoplay muted loop controls style="max-width: 100%; height: auto;">
+        <source id="video-source" src="https://weather.fogcat5.com/collector/video_latest" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 </body>

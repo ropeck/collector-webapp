@@ -18,6 +18,7 @@ VIDEO_WORKING_DIR = os.environ.get('VIDEO_WORKING_DIR', "/app/video")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 
 
+# icon for browser tabs
 @app.route('/favicon.ico')
 def favicon() -> Response:
     return send_from_directory(
