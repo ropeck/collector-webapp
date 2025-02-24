@@ -106,7 +106,7 @@ def send_video(subpath) -> Response:
     if not blob:
         error_message = f"Error: {subpath} does not exist"
         logging.error(error_message)
-        return Response(error_message", status=404)
+        return Response(error_message, status=404)
 
     # Define GCS paths
     gcs_cache_path = f"cache/{blob.name.replace('/', '_')}.mp4"
