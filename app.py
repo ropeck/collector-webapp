@@ -104,8 +104,9 @@ def send_video(subpath) -> Response:
     blob = storage_client.bucket(BUCKET_NAME).get_blob(subpath)
 
     if not blob:
-        logging.error(f"Error processing video: {error_message}")
-        return Response(f"Error: {error_message}", status=404)
+        error_message = f"Error: {subpath} does not exist"
+        logging.error(error_message)
+        return Response(error_message", status=404)
 
     # Define GCS paths
     gcs_cache_path = f"cache/{blob.name.replace('/', '_')}.mp4"
