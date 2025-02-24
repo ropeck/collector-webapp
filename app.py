@@ -82,8 +82,7 @@ def api() -> str:
 
 @app.route('/video/<path:subpath>')
 def video(subpath: str) -> Response:
-    blob = storage_client.bucket(BUCKET_NAME).get_blob(subpath)
-    return send_video(blob)
+    return send_video(subpath)
 
 
 def get_video_list() -> List[storage.Blob]:
@@ -96,12 +95,18 @@ def get_video_list() -> List[storage.Blob]:
     return blobs
 
 
-def send_video(blob: storage.Blob) -> Response:
+def send_video(subpath) -> Response:
     """
     Checks GCS for a cached processed video.
     If not present, downloads the blob, processes it with FFmpeg, uploads the processed file to GCS,
     and serves the video content back.
     """
+    blob = storage_client.bucket(BUCKET_NAME).get_blob(subpath)
+
+    if not blob:
+        logging.error(f"Error processing video: {error_message}")
+        return Response(f"Error: {error_message}", status=404)
+
     # Define GCS paths
     gcs_cache_path = f"cache/{blob.name.replace('/', '_')}.mp4"
     logging.info(f"cache path {gcs_cache_path}")
@@ -177,8 +182,7 @@ def send_video(blob: storage.Blob) -> Response:
 @app.route('/video_latest')
 def video_latest() -> Response:
     try:
-        blob = latest_blob()
-        return send_video(blob)
+        return send_video(latest_blob())
     except ValueError as e:
         logging.error(f"Error fetching latest video: {e}")
         return Response(f"Error: {str(e)}", status=404)
@@ -187,20 +191,20 @@ def video_latest() -> Response:
         return Response(f"Error: {str(e)}", status=500)
 
 
-def latest_blob() -> storage.Blob:
+def latest_blob() -> str:
     blobs = get_video_list()
     if not blobs:
         raise ValueError("No blobs found in the bucket.")
     latest = max(blobs, key=lambda b: b.updated)
     logging.info(f"Latest blob: {latest.name}, size: {latest.size}, created at: {latest.time_created}")
-    return latest
+    return latest.name
 
 
 @app.route('/latest')
 def latest() -> str:
     return render_template("latest.html",
                            video_url="video_latest",
-                           latest_blob=str(latest_blob()))
+                           latest_blob=latest_blob())
 
 
 if __name__ == '__main__':
