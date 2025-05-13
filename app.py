@@ -155,7 +155,7 @@ def send_video(subpath) -> Response:
             "-b:a", "128k",                # Explicit audio bitrate
             "-movflags", "+faststart",    # Web-optimized playback
             "-y",                          # Overwrite without prompt
-            output_path
+            processed_path
         ]
         logging.info(f"executing {' '.join(args)}")
         subprocess.run(
