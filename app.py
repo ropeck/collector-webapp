@@ -144,14 +144,18 @@ def send_video(subpath) -> Response:
         # Use FFmpeg to process the video and save to a file
         args = [
             "ffmpeg",
-            "-i", local_path,  # Input file
-            "-vf",
-            f"drawtext=text='{title_text}':fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:fontsize=24:fontcolor=white:x=10:y=10," \
-            f"drawtext=text='{watermark_text}':fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:fontsize=24:fontcolor=white:x=w-tw-10:y=10",
-            "-c:v", "libx264",
-            "-c:a", "aac",
-            "-movflags", "+faststart",
-            "-y", processed_path
+            "-hide_banner",                # Less console spam
+            "-loglevel", "error",          # Show only errors
+            "-i", "pipe:0",                # Input from stdin
+            "-t", "15",                    # 15 seconds duration
+            "-preset", "ultrafast",        # Fastest x264 preset
+            "-crf", "28",                  # Lower quality for faster encode (adjustable)
+            "-c:v", "libx264",             # Video codec
+            "-c:a", "aac",                 # Audio codec
+            "-b:a", "128k",                # Explicit audio bitrate
+            "-movflags", "+faststart",    # Web-optimized playback
+            "-y",                          # Overwrite without prompt
+            output_path
         ]
         logging.info(f"executing {' '.join(args)}")
         subprocess.run(
