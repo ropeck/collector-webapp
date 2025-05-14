@@ -146,7 +146,7 @@ def send_video(subpath) -> Response:
             "ffmpeg",
             "-hide_banner",                # Less console spam
             "-loglevel", "error",          # Show only errors
-            "-i", "pipe:0",                # Input from stdin
+            "-i", local_path,
             "-t", "15",                    # 15 seconds duration
             "-preset", "ultrafast",        # Fastest x264 preset
             "-crf", "28",                  # Lower quality for faster encode (adjustable)
