@@ -141,6 +141,17 @@ def send_video(subpath) -> Response:
         title_text = creation_time_formatted.replace(":", "\\:")
         watermark_text = "fogcat5"
 
+        # Overlay settings
+        fontfile = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+        fontsize = "24"
+        fontcolor = "white"
+        fontselector = f"fontfile={fontfile}:fontsize={fontsize}:fontcolor={fontcolor}"
+
+        # Drawtext filter
+        drawtext_filters = [
+            f"drawtext=text='{title_text}':{fontselector}:x=10:y=10:enable='eq(n,0)'",
+            f"drawtext=text='{watermark_text}':{fontselector}:x=w-tw-10:y=10:enable='eq(n,0)'"
+        ]
         # Use FFmpeg to process the video and save to a file
         args = [
             "ffmpeg",
@@ -149,14 +160,15 @@ def send_video(subpath) -> Response:
             "-i", local_path,
             "-t", "15",                    # 15 seconds duration
             "-preset", "ultrafast",        # Fastest x264 preset
+            "-vf",
             "-crf", "28",                  # Lower quality for faster encode (adjustable)
             "-c:v", "libx264",             # Video codec
-            "-c:a", "aac",                 # Audio codec
-            "-b:a", "128k",                # Explicit audio bitrate
+            "-c:a", "copy",                # Copy audio
             "-movflags", "+faststart",    # Web-optimized playback
             "-y",                          # Overwrite without prompt
             processed_path
-        ]
+        ] + drawtext_filters
+
         logging.info(f"executing {' '.join(args)}")
         subprocess.run(
             args,
