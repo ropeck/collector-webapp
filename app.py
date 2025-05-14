@@ -1,17 +1,17 @@
 #!/usr/local/bin/python
 
-from datetime import datetime
-from flask import Flask, render_template, Response, send_from_directory, jsonify
-from flask_cors import CORS
-from google.cloud import storage
-from pytz import timezone
-from typing import List
 import logging
 import os
 import re
 import subprocess
 import traceback
+from datetime import datetime
+from typing import List
 
+from flask import Flask, Response, jsonify, render_template, send_from_directory
+from flask_cors import CORS
+from google.cloud import storage
+from pytz import timezone
 
 app = Flask(__name__)
 CORS(app)  # This enables CORS for all routes
@@ -160,14 +160,14 @@ def send_video(subpath) -> Response:
             "-i", local_path,
             "-t", "15",                    # 15 seconds duration
             "-preset", "ultrafast",        # Fastest x264 preset
-            "-vf",
-            "-crf", "28",                  # Lower quality for faster encode (adjustable)
+            "-vf", ",".join(drawtext_filters),  # Overlay text
+            "-an",                         # No audio
             "-c:v", "libx264",             # Video codec
             "-c:a", "copy",                # Copy audio
             "-movflags", "+faststart",    # Web-optimized playback
             "-y",                          # Overwrite without prompt
             processed_path
-        ] + drawtext_filters
+        ]
 
         logging.info(f"executing {' '.join(args)}")
         subprocess.run(
