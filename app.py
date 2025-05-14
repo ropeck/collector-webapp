@@ -149,8 +149,8 @@ def send_video(subpath) -> Response:
 
         # Drawtext filter
         drawtext_filters = [
-            f"drawtext=text='{title_text}':{fontselector}:x=10:y=10:enable='eq(n,0)'",
-            f"drawtext=text='{watermark_text}':{fontselector}:x=w-tw-10:y=10:enable='eq(n,0)'"
+            f"drawtext=text='{title_text}':{fontselector}:x=10:y=10",
+            f"drawtext=text='{watermark_text}':{fontselector}:x=w-tw-10:y=10"
         ]
         # Use FFmpeg to process the video and save to a file
         args = [
