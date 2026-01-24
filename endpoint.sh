@@ -17,4 +17,6 @@ cd /app || exit
 
 
 # start the web service on port 5000
-gunicorn -b 0.0.0.0:5000 app:app
+# Use multiple workers to handle concurrent requests and prevent health check failures
+# Increase timeout for video processing operations
+gunicorn -w 2 --timeout 120 -b 0.0.0.0:5000 app:app
