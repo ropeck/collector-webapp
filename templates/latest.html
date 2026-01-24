@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Latest Video</title>
-    {{ latest_blob }}
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 20px; }
+        nav { margin-bottom: 20px; padding: 10px 0; border-bottom: 1px solid #ccc; }
+        nav a { margin-right: 15px; text-decoration: none; color: #0066cc; }
+        nav a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
+    <nav>
+        <a href="/">Today's Videos</a>
+        <a href="/latest">Latest Video</a>
+        <a href="/gallery">Monthly Compilations</a>
+    </nav>
     <h1>Latest Video</h1>
+    <p>{{ latest_blob }}</p>
     <video autoplay muted loop controls style="max-width: 100%; height: auto;">
         <source src="{{ video_url }}" type="video/mp4">
         Your browser does not support the video tag.

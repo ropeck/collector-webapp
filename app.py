@@ -19,6 +19,7 @@ CORS(app)  # This enables CORS for all routes
 storage_client: storage.Client = storage.Client()
 BUCKET_NAME: str = os.environ.get('BUCKET_NAME', "fogcat-webcam")
 VIDEO_WORKING_DIR = os.environ.get('VIDEO_WORKING_DIR', "/app/video")
+COLLECTOR_API_URL: str = os.environ.get('COLLECTOR_API_URL', "")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
@@ -222,6 +223,12 @@ def latest() -> str:
     return render_template("latest.html",
                            video_url="video_latest",
                            latest_blob=latest_blob())
+
+
+@app.route('/gallery')
+def gallery() -> str:
+    """Serve the monthly compilations gallery."""
+    return render_template("gallery.html", api_base_url=COLLECTOR_API_URL)
 
 
 if __name__ == '__main__':
