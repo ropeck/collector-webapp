@@ -22,6 +22,17 @@ const yearFilterEl = document.getElementById('year-filter');
 let monthsData = [];
 let currentYear = '';
 
+/**
+ * Parse URL parameters for deep linking
+ */
+function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+        year: params.get('year'),
+        month: params.get('month')
+    };
+}
+
 // Month names
 const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -182,9 +193,27 @@ function populateYearFilter() {
 }
 
 /**
+ * Update URL for deep linking without page reload
+ */
+function updateUrl(year, month) {
+    const url = new URL(window.location);
+    if (year && month) {
+        url.searchParams.set('year', year);
+        url.searchParams.set('month', month);
+    } else {
+        url.searchParams.delete('year');
+        url.searchParams.delete('month');
+    }
+    window.history.pushState({}, '', url);
+}
+
+/**
  * Play a sunset compilation
  */
 async function playCompilation(year, month, monthName) {
+    // Update URL for deep linking
+    updateUrl(year, month);
+
     modalTitleEl.textContent = `${monthName} ${year} Sunsets`;
     videoModalEl.classList.remove('hidden');
     videoLoadingEl.classList.remove('hidden');
@@ -238,6 +267,8 @@ function closeModal() {
     videoEl.pause();
     videoModalEl.classList.add('hidden');
     document.body.style.overflow = '';
+    // Clear URL params
+    updateUrl(null, null);
 }
 
 /**
@@ -265,6 +296,24 @@ async function init() {
         populateYearFilter();
         loadingEl.style.display = 'none';
         renderMonths();
+
+        // Check for deep link parameters
+        const params = getUrlParams();
+        if (params.year && params.month) {
+            const year = parseInt(params.year);
+            const month = parseInt(params.month);
+            const monthName = monthNames[month - 1];
+
+            // Set year filter if specified
+            if (params.year) {
+                yearFilterEl.value = params.year;
+                currentYear = params.year;
+                renderMonths();
+            }
+
+            // Auto-play the specified month
+            playCompilation(year, month, monthName);
+        }
     } catch (error) {
         console.error('Failed to load gallery:', error);
         loadingEl.innerHTML = `
@@ -275,6 +324,19 @@ async function init() {
             </div>
         `;
     }
+
+    // Handle browser back/forward navigation
+    window.addEventListener('popstate', () => {
+        const params = getUrlParams();
+        if (params.year && params.month) {
+            const year = parseInt(params.year);
+            const month = parseInt(params.month);
+            const monthName = monthNames[month - 1];
+            playCompilation(year, month, monthName);
+        } else {
+            closeModal();
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', init);

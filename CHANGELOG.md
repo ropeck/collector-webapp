@@ -16,6 +16,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Filter by year
   - Click to play sunset compilations in modal
   - Shows video count, duration, and file size metadata
+  - Deep linking support (`/sunset-gallery?year=2024&month=6`)
+  - Browser back/forward navigation support
 - New static assets: `static/sunset/app.js` and `static/sunset/style.css`
 - Navigation link to sunset gallery in all templates
 - 4 new tests for sunset gallery route
