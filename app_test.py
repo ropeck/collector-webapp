@@ -336,5 +336,47 @@ class GalleryTestCase(unittest.TestCase):
         self.assertIsInstance(COLLECTOR_API_URL, str)
 
 
+class SunsetGalleryTestCase(unittest.TestCase):
+    """Test cases for the sunset gallery feature."""
+
+    def setUp(self):
+        app.testing = True
+        self.client = app.test_client()
+
+    @patch('app.render_template')
+    def test_sunset_gallery_route_exists(self, mock_render_template):
+        """Test the sunset-gallery route exists and returns 200."""
+        mock_render_template.return_value = "Sunset Gallery"
+        response = self.client.get('/sunset-gallery')
+        self.assertEqual(response.status_code, 200)
+
+    @patch('app.render_template')
+    def test_sunset_gallery_uses_correct_template(self, mock_render_template):
+        """Test sunset-gallery uses the sunset_gallery.html template."""
+        mock_render_template.return_value = "Sunset Gallery"
+        self.client.get('/sunset-gallery')
+        mock_render_template.assert_called_once_with(
+            'sunset_gallery.html',
+            api_base_url=COLLECTOR_API_URL
+        )
+
+    @patch('app.render_template')
+    def test_sunset_gallery_passes_api_url(self, mock_render_template):
+        """Test sunset-gallery passes the API URL to the template."""
+        mock_render_template.return_value = "Sunset Gallery"
+        self.client.get('/sunset-gallery')
+
+        # Verify api_base_url is passed
+        call_kwargs = mock_render_template.call_args[1]
+        self.assertIn('api_base_url', call_kwargs)
+        self.assertEqual(call_kwargs['api_base_url'], COLLECTOR_API_URL)
+
+    def test_sunset_gallery_content_type(self, ):
+        """Test sunset-gallery returns HTML content."""
+        response = self.client.get('/sunset-gallery')
+        # Should return HTML (text/html)
+        self.assertIn('text/html', response.content_type)
+
+
 if __name__ == '__main__':
     unittest.main()
