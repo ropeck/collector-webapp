@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunset Collections - Seacliff Beach</title>
+    <link rel="stylesheet" href="/static/sunset/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="top-nav">
+            <a href="/">Today's Videos</a>
+            <a href="/latest">Latest Video</a>
+            <a href="/gallery">All Compilations</a>
+            <a href="/sunset-gallery" class="active">Sunset Collections</a>
+        </nav>
+
+        <header>
+            <h1>Seacliff Beach Sunsets</h1>
+            <p class="subtitle">Monthly sunset time-lapse compilations</p>
+            <div class="filters">
+                <label for="year-filter">Year:</label>
+                <select id="year-filter">
+                    <option value="">All Years</option>
+                </select>
+            </div>
+        </header>
+
+        <main>
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Loading sunset collections...</p>
+            </div>
+
+            <div id="months-grid" class="months-grid"></div>
+
+            <div id="video-modal" class="video-modal hidden">
+                <div class="modal-backdrop"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="modal-title"></h2>
+                        <button id="close-modal" class="close-btn">&times;</button>
+                    </div>
+                    <div class="video-container">
+                        <video id="video" controls>
+                            <source id="video-source" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div id="video-loading" class="video-loading hidden">
+                            <div class="spinner"></div>
+                            <p id="loading-text">Generating sunset compilation...</p>
+                        </div>
+                    </div>
+                    <div class="modal-meta" id="modal-meta"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Seacliff Beach Camera - Sunset Time-lapse Collection</p>
+        </footer>
+    </div>
+
+    <script>
+        const API_BASE = '{{ api_base_url }}';
+    </script>
+    <script src="/static/sunset/app.js"></script>
+</body>
+</html>

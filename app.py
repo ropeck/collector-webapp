@@ -231,5 +231,11 @@ def gallery() -> str:
     return render_template("gallery.html", api_base_url=COLLECTOR_API_URL)
 
 
+@app.route('/sunset-gallery')
+def sunset_gallery() -> str:
+    """Serve the sunset collections gallery."""
+    return render_template("sunset_gallery.html", api_base_url=COLLECTOR_API_URL)
+
+
 if __name__ == '__main__':
     app.run(debug=True, timeout=60)
