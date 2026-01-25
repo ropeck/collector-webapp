@@ -239,9 +239,11 @@ Response:
 
 ## Success Criteria
 
-- [ ] User can browse all available months with sunset compilations
-- [ ] Thumbnails load for each month
-- [ ] Clicking a month plays the compilation video
-- [ ] Compilations generate on-demand if not cached
-- [ ] Loading states shown during generation
-- [ ] Works on mobile devices
+- [x] User can browse all available months with sunset compilations
+- [x] Thumbnails load for each month
+- [x] Clicking a month plays the compilation video
+- [x] Compilations generate on-demand if not cached
+- [x] Loading states shown during generation
+- [x] Works on mobile devices
+- [x] Deep linking to specific months
+- [x] Automatic thumbnail generation for compilations
