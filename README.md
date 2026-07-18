@@ -1,6 +1,6 @@
 # camera_collector_webapp
 
-This is a Flask web application for displaying videos collected by the camera-collector Kubernetes pod.
+This is a Flask web application for displaying videos collected by the camera-collector system.
 
 ## Development Setup
 
@@ -22,6 +22,7 @@ This is a Flask web application for displaying videos collected by the camera-co
 
 ## Deployment
 
-This app is designed to run as a pod in Kubernetes. Build the Docker image and deploy it to your cluster.
-The repository does CI/CD and builds the fogcat5/collector-webapp image from the event trigger.
-To make a new version, a small change can be checked in.
+Runs on **Cloud Run** (as of 2026-07-18), not GKE — see
+[PROJECT.md](PROJECT.md#deployment) for the current setup, including why it's
+fully public rather than IAP-gated. The old push-to-GKE CI/CD pipeline is
+retired.

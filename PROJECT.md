@@ -184,7 +184,29 @@ fogcat-webcam/
 
 ## Deployment
 
-### Kubernetes Resources
+**Now runs on Cloud Run (as of 2026-07-18), not GKE.** Reached at
+`weather.fogcat5.com/collector/*` via the shared `fogcat5-urlmap` load balancer
+(project `k8s-project-441922`, one LB covers every `*.fogcat5.com` app) — the
+`/collector` path prefix is stripped by the LB's own URL rewrite before
+forwarding, so this app itself never sees it. **Fully public, no IAP** — this
+app has no sensitive or mutating routes (everything is read-only video
+listing/serving), and a separate public frontend (the Netlify video-archive
+viewer at `legendary-figolla-368e7a.netlify.app`) depends on unauthenticated
+access to `/api`. It was briefly gated behind IAP during the migration, which
+broke that viewer; reverted to fully public once that dependency was confirmed.
+
+```bash
+gcloud builds submit . --project=k8s-project-441922 \
+  --tag us-central1-docker.pkg.dev/k8s-project-441922/cloud-run-source-deploy/collector-webapp:TAG
+gcloud run deploy collector-webapp --project=k8s-project-441922 --region=us-west1 \
+  --image=us-central1-docker.pkg.dev/k8s-project-441922/cloud-run-source-deploy/collector-webapp:TAG
+```
+
+The GKE Deployment/Service (`deployment.yaml`/`service.yaml`) and the
+push-to-`master` CI/CD pipeline below are retired — GKE is scaled to 0, kept
+only as a rollback reference.
+
+### Kubernetes Resources (retired)
 
 **Deployment (deployment.yaml):**
 - 2 replicas for high availability
@@ -195,7 +217,7 @@ fogcat-webcam/
 - LoadBalancer type
 - External port 80 → container port 5000
 
-### CI/CD Pipeline
+### CI/CD Pipeline (retired)
 
 Triggered on push to `master` branch:
 
